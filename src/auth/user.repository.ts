@@ -26,6 +26,18 @@ export class UserRepository extends Repository<User> {
         
     }
 
+    async validateUserPassword(authCredentialsDto: AuthCredentialsDto) {
+        const {username, password} = authCredentialsDto;
+        const user = await this.findOne({username});
+        console.log(`user.repository.ts`, user);
+        if (user && await user.validatePassword(password)) {
+            const {password, ...userData} = user;
+            return userData;
+        }
+
+        return null;
+    }
+
     private async hashPassword(password: string, salt: string): Promise<string> {
         return bcrypt.hash(password, salt);
     }
