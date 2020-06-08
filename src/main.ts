@@ -6,9 +6,16 @@ import * as config from 'config';
 async function bootstrap() {
   const logger = new Logger('bootstrap');
   const app = await NestFactory.create(AppModule);
+  const { origin, port: serverPort } = config.get('server');
 
-  const serverConfig = config.get('server');
-  const port = process.env.PORT || serverConfig.port;
+  if (process.env.NODE_ENV === 'development') {
+    app.enableCors();
+  } else {
+    app.enableCors({ origin });
+    logger.log(`Accepting requests from origin "${origin}"`);
+  }
+
+  const port = process.env.PORT || serverPort;
 
   await app.listen(port);
 
