@@ -24,4 +24,14 @@ export class User extends BaseEntity {
         const pw = await bcrypt.hash(password, this.salt);
         return pw === this.password;
     }
+
+    static generateMock(): User {
+        const user = new User();
+        user.id = 111111;
+        user.username = 'username';
+        user.password = 'password';
+        user.salt = 'salt';
+        user.tasks = [];
+        return user;
+    }
 }
